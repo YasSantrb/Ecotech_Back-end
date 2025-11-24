@@ -31,7 +31,6 @@ class UserSerializer(serializers.ModelSerializer):
                 user.set_password(password)
                 user.save()
             UserProfile.objects.create(user=user, **profile_data)
-            
             return user
             
         except IntegrityError as e:
