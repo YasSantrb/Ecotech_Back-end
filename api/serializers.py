@@ -12,14 +12,17 @@ class ExperimentoSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['cidade', 'estado']
+        fields = ['cpf_cnpj', 'telefone', 'cep']
         
 class UserSerializer(serializers.ModelSerializer):
     profile = UserProfileSerializer()
+    
+    confirmar_senha = serializers.CharField(write_only=True)
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'email', 'profile']
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ['id', 'username', 'password', 'confirmar_senha', 'email', 'profile']
+        extra_kwargs = {'password': {'write_only': True}, 
+                        'email': {'required': True}}
         
     def create(self, validated_data):
         profile_data = validated_data.pop('profile')
@@ -42,3 +45,14 @@ class UserSerializer(serializers.ModelSerializer):
             if 'user' in locals():
                  user.delete()
             raise serializers.ValidationError({"error": "Erro desconhecido ao criar usuário: " + str(e)})
+        
+    def validate(self, data):
+        if data['password'] != data['confirmar_senha']:
+            raise serializers.ValidationError("As senhas não coincidem.")
+        
+        if 'profile' in data and 'cpf_cnpj' not in data['profile']:
+            raise serializers.ValidationError("O campo CPF/CNPJ é obrigatório no perfil.")
+        
+        data.pop('confirmar_senha')
+        return data
+        
