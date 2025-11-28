@@ -1,3 +1,4 @@
+import os
 """
 Django settings for ecotech_back_end project.
 
@@ -9,7 +10,6 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,8 +26,8 @@ SECRET_KEY = 'django-insecure-o^dg*!hkj)p7&vo(p^0%db^8p($^t2n89e&symj6u7d71a%kde
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 # Application definition
 
 INSTALLED_APPS = [

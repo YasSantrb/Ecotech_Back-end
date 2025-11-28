@@ -22,3 +22,4 @@ class PontosColeta(models.Model):
     
     def __str__(self):
         return self.rua
+    
