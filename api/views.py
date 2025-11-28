@@ -35,13 +35,13 @@ class RegistroUsuarioView(APIView):
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
     def post(self, request):
-        email = request.data.get('email')  
+        email_input = request.data.get('email')  
         password = request.data.get('password')
         
-        if not email or not password:
+        if not email_input or not password:
             return Response({'erro': 'Email e senha são obrigatórios.'}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            user = User.objects.get(email__iexact=email)
+            user = User.objects.get(email__iexact=email_input)
         except User.DoesNotExist:
             return Response({'erro': 'Credenciais inválidas (E-mail não encontrado).'}, status=status.HTTP_401_UNAUTHORIZED)
         auth_user = authenticate(username=user.username, password=password)
