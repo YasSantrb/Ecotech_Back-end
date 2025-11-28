@@ -30,7 +30,8 @@ class RegistroUsuarioView(APIView):
                 }
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
     def post(self, request):
@@ -39,7 +40,11 @@ class LoginView(APIView):
         
         if not email_input or not password:
             return Response({'erro': 'Email e senha são obrigatórios.'}, status=status.HTTP_400_BAD_REQUEST)
-        auth_user = authenticate(request=request, username=email_input, password=password)
+        try:
+            user = User.objects.get(email__iexact=email_input)
+        except User.DoesNotExist:
+            return Response({'erro': 'Credenciais inválidas (E-mail não encontrado).'}, status=status.HTTP_401_UNAUTHORIZED)
+        auth_user = authenticate(username=user.username, password=password)
         
         if auth_user is not None:
             token, _ = Token.objects.get_or_create(user=auth_user)
@@ -61,8 +66,8 @@ class LoginView(APIView):
                 'email': auth_user.email, 
                 'profile': profile_data
             }, status=status.HTTP_200_OK)
+        
         return Response({'erro': 'Credenciais inválidas (E-mail ou senha incorretos).'}, status=status.HTTP_401_UNAUTHORIZED)
-    
 class PontosColetaCreate(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
