@@ -1,4 +1,4 @@
-from .views import ExperimentoCreate, ExperimentoDetalhe
+from .views import PontosColetaCreate, PontosColetaDetalhe
 from django.urls import path
 from .views import LoginView
 from .views import RegistroUsuarioView
@@ -6,21 +6,6 @@ from .views import RegistroUsuarioView
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('registro/', RegistroUsuarioView.as_view(), name='registrar'),
-    path('experimentos/', ExperimentoCreate.as_view(), name='experimento-criar'),
-    path('experimentos/<int:pk>/', ExperimentoDetalhe.as_view(), name='experimento-detalhe'),
+    path('pontos_coleta/', PontosColetaCreate.as_view(), name='pontos_coleta-criar'),
+    path('pontos_coleta/<int:pk>/', PontosColetaDetalhe.as_view(), name='pontos_coleta-detalhe'),
 ]
-
-# {
-#     "username": "yasmim",
-#     "password": "senha123",
-# }
-
-# {
-#     "username": "yasmim",
-#     "password": "senha123",
-#     "email": "yas@gmail.com",
-#     "profile": {
-#         "cidade": "São Paulo",
-#         "estado": "SP"
-#     }
-# }

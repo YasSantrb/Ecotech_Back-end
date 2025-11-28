@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from .models import Experimento
+from .models import PontosColeta
 from .models import UserProfile
 from .models import User
 from django.db import IntegrityError
 
-class ExperimentoSerializer(serializers.ModelSerializer):
+class PontosColetaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Experimento
+        model = PontosColeta
         fields = '__all__'
 
 class UserProfileSerializer(serializers.ModelSerializer):

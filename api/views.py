@@ -1,34 +1,13 @@
 from rest_framework.views import APIView 
 from rest_framework.response import Response
-from .models import Experimento
+from .models import PontosColeta
 from django.shortcuts import get_object_or_404
-from .serializers import ExperimentoSerializer
+from .serializers import PontosColetaSerializer
 from .serializers import UserSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework import permissions, status
 from .models import User, UserProfile
-from django.contrib.auth import authenticate
-class ExperimentoCreate(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-    def get(self, request):
-        experimentos = Experimento.objects.filter(usuario=request.user)
-        serializer = ExperimentoSerializer(experimentos, many=True)
-        return Response(serializer.data)
-    
-    def post(self, request):
-        serializer = ExperimentoSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(usuario=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-class ExperimentoDetalhe(APIView):
-    def get(self, request, pk):
-        experimento = get_object_or_404(Experimento, pk=pk)
-        serializer = ExperimentoSerializer(experimento)
-        return Response(serializer.data)
-    
-    
+from django.contrib.auth import authenticate    
 class RegistroUsuarioView(APIView):
     permission_classes = [permissions.AllowAny]
     def post(self, request):
@@ -89,4 +68,39 @@ class LoginView(APIView):
             return Response({'erro': 'Credenciais inválidas.'}, status=status.HTTP_401_UNAUTHORIZED)
     
     def get(self, request):
-        return Response({'mensagem': 'Envie username e password via post para obter o TOKEN.'})
+        return Response({'mensagem': 'Envie o email e senha via post para obter o TOKEN.'})
+    
+class PontosColetaCreate(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request):
+        pontosColeta = PontosColeta.objects.filter(usuario=request.user)
+        serializer = PontosColetaSerializer(pontosColeta, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = PontosColetaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(usuario=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class PontosColetaDetalhe(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request, pk):
+        pontosColeta = get_object_or_404(PontosColeta, pk=pk, usuario = request.user)
+        serializer = PontosColetaSerializer(pontosColeta)
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        pontoColeta = get_object_or_404(PontosColeta, pk=pk, usuario=request.user)
+        serializer = PontosColetaSerializer(pontoColeta, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        pontoColeta = get_object_or_404(PontosColeta, pk=pk, usuario=request.user)
+        pontoColeta.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
