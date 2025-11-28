@@ -34,41 +34,34 @@ class RegistroUsuarioView(APIView):
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
     def post(self, request):
-        email = request.data.get('email')  
+        email_input = request.data.get('email')  
         password = request.data.get('password')
         
-        if not email or not password:
+        if not email_input or not password:
             return Response({'erro': 'Email e senha são obrigatórios.'}, status=status.HTTP_400_BAD_REQUEST)
+        auth_user = authenticate(request=request, username=email_input, password=password)
         
-        user = None
-        try:
-            user = User.objects.get(email__iexact=email)
-        except User.DoesNotExist:
-            pass
-        if user is not None:
-            auth_user = authenticate(username=user.email, password = password)
-            if auth_user:
-                token, _ = Token.objects.get_or_create(user=user)
-                profile_data = {}
-                try:
-                    profile_data = {
-                        'cep': auth_user.userprofile.cep,
-                        'cpf_cnpj': auth_user.userprofile.cpf_cnpj,
-                        'telefone': auth_user.userprofile.telefone
-                        }
-                except UserProfile.DoesNotExist:
-                    pass
-                return Response( data= {
-                    'token': token.key,
-                    'usuario_id': user.id,
-                    'username': user.username,
-                    'email': user.email, 
-                    'profile': profile_data
-                    })
-            return Response({'erro': 'Credenciais inválidas.'}, status=status.HTTP_401_UNAUTHORIZED)
-    
-    def get(self, request):
-        return Response({'mensagem': 'Envie o email e senha via post para obter o TOKEN.'})
+        if auth_user is not None:
+            token, _ = Token.objects.get_or_create(user=auth_user)
+            
+            profile_data = {}
+            try:
+                profile_data = {
+                    'cep': auth_user.userprofile.cep,
+                    'cpf_cnpj': auth_user.userprofile.cpf_cnpj,
+                    'telefone': auth_user.userprofile.telefone
+                }
+            except UserProfile.DoesNotExist:
+                pass 
+
+            return Response( data= {
+                'token': token.key,
+                'usuario_id': auth_user.id,
+                'username': auth_user.username,
+                'email': auth_user.email, 
+                'profile': profile_data
+            }, status=status.HTTP_200_OK)
+        return Response({'erro': 'Credenciais inválidas (E-mail ou senha incorretos).'}, status=status.HTTP_401_UNAUTHORIZED)
     
 class PontosColetaCreate(APIView):
     permission_classes = [permissions.IsAuthenticated]

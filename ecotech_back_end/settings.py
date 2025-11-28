@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-o^dg*!hkj)p7&vo(p^0%db^8p($^t2n89e&symj6u7d71a%kde
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'yassant2.pythonanywhere.com'
+    'yassant2.pythonanywhere.com',
+    '127.0.0.1',      
+    'localhost',      
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
@@ -119,7 +121,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+AUTHENTICATION_BACKENDS = [
+    'api.backends.EmailBackend',  
+    'django.contrib.auth.backends.ModelBackend', 
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
