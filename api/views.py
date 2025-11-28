@@ -46,7 +46,7 @@ class LoginView(APIView):
         except User.DoesNotExist:
             pass
         if user is not None:
-            auth_user = authenticate(username=user.username, password = password)
+            auth_user = authenticate(username=user.email, password = password)
             if auth_user:
                 token, _ = Token.objects.get_or_create(user=user)
                 profile_data = {}
