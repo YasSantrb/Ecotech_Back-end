@@ -3,10 +3,12 @@ from rest_framework.response import Response
 from .models import PontosColeta
 from django.shortcuts import get_object_or_404
 from .serializers import PontosColetaSerializer
+from .serializers import CriarDoacaoSerializer
 from .serializers import UserSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework import permissions, status
 from .models import User, UserProfile
+from .models import CriarDoacao
 from django.contrib.auth import authenticate    
 class RegistroUsuarioView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -24,7 +26,7 @@ class RegistroUsuarioView(APIView):
                     'email': user.email, 
                     'profile': {
                         'cep': user.userprofile.cep,
-                        'cpf_cnpj': user.userprofile.cpf_cnpj,
+                        'tipo_usuario': user.userprofile.tipo_usuario,
                         'telefone': user.userprofile.telefone
                     }
                 }
@@ -53,7 +55,7 @@ class LoginView(APIView):
             try:
                 profile_data = {
                     'cep': auth_user.userprofile.cep,
-                    'cpf_cnpj': auth_user.userprofile.cpf_cnpj,
+                    'tipo_usuario': auth_user.userprofile.tipo_usuario,
                     'telefone': auth_user.userprofile.telefone
                 }
             except UserProfile.DoesNotExist:
@@ -101,4 +103,41 @@ class PontosColetaDetalhe(APIView):
     def delete(self, request, pk):
         pontoColeta = get_object_or_404(PontosColeta, pk=pk, usuario=request.user)
         pontoColeta.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    
+
+class CriarDoacaoCreate(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request):
+        criarDoacao = CriarDoacao.objects.filter(usuario=request.user)
+        serializer = CriarDoacaoSerializer(criarDoacao, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = CriarDoacaoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(usuario=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class CriarDoacaoDetalhe(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request, pk):
+        criarDoacao = get_object_or_404(CriarDoacao, pk=pk, usuario = request.user)
+        serializer = CriarDoacaoSerializer(criarDoacao)
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        criarDoacao = get_object_or_404(CriarDoacao, pk=pk, usuario=request.user)
+        serializer = CriarDoacaoSerializer(criarDoacao, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        criarDoacao = get_object_or_404(CriarDoacao, pk=pk, usuario=request.user)
+        criarDoacao.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
