@@ -65,6 +65,7 @@ class UserSerializer(serializers.ModelSerializer):
             user = User.objects.create(**validated_data)
             if password:
                 user.set_password(password)
+                user.is_active = True
                 user.save()
             UserProfile.objects.create(user=user, **profile_data)
             return user
@@ -86,4 +87,6 @@ class UserSerializer(serializers.ModelSerializer):
         
         data.pop('confirmar_senha')
         return data
+        
+        
         

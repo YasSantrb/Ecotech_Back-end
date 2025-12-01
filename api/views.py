@@ -10,6 +10,10 @@ from rest_framework import permissions, status
 from .models import User, UserProfile
 from .models import CriarDoacao
 from django.contrib.auth import authenticate    
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
+@method_decorator(csrf_exempt, name='dispatch')
 class RegistroUsuarioView(APIView):
     permission_classes = [permissions.AllowAny]
     def post(self, request):
