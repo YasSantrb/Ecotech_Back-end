@@ -1,14 +1,28 @@
-from .views import PontosColetaCreate, PontosColetaDetalhe
+from .views import PontosColetaCreate, PontosColetaDetalhe, TodosPontosColetaGet
 from django.urls import path
 from .views import LoginView
 from .views import RegistroUsuarioView
-from .views import CriarDoacaoCreate, CriarDoacaoDetalhe
+from .views import CriarDoacaoCreate, CriarDoacaoDetalhe, TodasDoacoesGet
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('registro/', RegistroUsuarioView.as_view(), name='registrar'),
-    path('pontos_coleta/', PontosColetaCreate.as_view(), name='pontos_coleta-criar'),
+    path('todos_pontos_coleta/', TodosPontosColetaGet.as_view(), name='todos_pontos_coleta'),
+    path('meus_pontos_coleta/', PontosColetaCreate.as_view(), name='meus_pontos_coleta'),
     path('pontos_coleta/<int:pk>/', PontosColetaDetalhe.as_view(), name='pontos_coleta-detalhe'),
-    path('criar_doacao/', CriarDoacaoCreate.as_view(), name='criar_doacao-criar'),
+    path('todas_doacoes/', TodasDoacoesGet.as_view(), name='todas_doacoes'),
+    path('minhas_doacoes/', CriarDoacaoCreate.as_view(), name='minhas_doacoes'),
     path('criar_doacao/<int:pk>/', CriarDoacaoDetalhe.as_view(), name='criar_doacao-detalhe'),
 ]
+
+# {
+# "username": "EcoLixo",
+# "email": "ecolixo@gmail.com",
+# "password": "ecolixo123",
+# "confirmar_senha": "ecolixo123",
+# "profile": {
+# "cep": "64809-911",
+# "cpf_cnpj": "12345678910111",
+# "telefone": "(89)3521-7373"
+# }
+# }

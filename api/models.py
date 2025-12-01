@@ -2,8 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 
 TIPO_USUARIO_CHOICES = [
-    ('Doador', 'Doador'),
-    ('Empresa', 'Empresa'),
+    ('DOADOR', 'Doador'),
+    ('EMPRESA', 'Empresa'),
 ]
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -28,11 +28,19 @@ class PontosColeta(models.Model):
     
     def __str__(self):
         return self.rua
+    
+# {
+#     "rua": "Rua João Dantas",
+#     "bairro": "Centro",
+#     "telefone": "(89)99929-2129",
+#     "cep": "64800-086",
+#     "horario_funcionamento": "Segunda a Sexta: 8h às 17:00"
+# }
 
 condicao_eletronico = [
-    ('Novo', 'Novo'),
-    ('Usado', 'Usado'),
-    ('Para peças', 'Para peças'),
+    ('NOVO', 'Novo'),
+    ('USADO', 'Usado'),
+    ('PARA PEÇAS', 'Para peças'),
 ]    
 class CriarDoacao(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='doacoes', null=True, blank=True)
@@ -47,3 +55,12 @@ class CriarDoacao(models.Model):
     
     def __str__(self):
         return self.nome_doacao
+    
+# {
+#     "nome_doacao": "Notebook Dell",
+#     "especificacao": "Modelo XPS 13, 16GB RAM, 512GB SSD",
+#     "endereco": "Rua das Flores, 123, Apt 45",
+#     "descricao_geral": "Notebook em bom estado, usado por 1 ano.",
+#     "observacao": "Pequenos arranhões na tampa.",
+#     "condicao": "Usado"
+# }

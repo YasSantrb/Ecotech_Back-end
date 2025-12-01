@@ -10,10 +10,8 @@ from rest_framework import permissions, status
 from .models import User, UserProfile
 from .models import CriarDoacao
 from django.contrib.auth import authenticate    
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
+from .permissions import IsDoador, IsEmpresa
 
-@method_decorator(csrf_exempt, name='dispatch')
 class RegistroUsuarioView(APIView):
     permission_classes = [permissions.AllowAny]
     def post(self, request):
@@ -74,6 +72,13 @@ class LoginView(APIView):
             }, status=status.HTTP_200_OK)
         
         return Response({'erro': 'Credenciais inválidas (E-mail ou senha incorretos).'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+class TodosPontosColetaGet(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request):
+        pontosColeta = PontosColeta.objects.all()
+        serializer = PontosColetaSerializer(pontosColeta, many=True)
+        return Response(serializer.data)
 class PontosColetaCreate(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
@@ -82,6 +87,8 @@ class PontosColetaCreate(APIView):
         return Response(serializer.data)
     
     def post(self, request):
+        if not IsEmpresa().has_permission(request, self):
+            return Response({'erro': 'Apenas usuários do tipo Empresa podem criar pontos de coleta.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = PontosColetaSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(usuario=request.user)
@@ -92,11 +99,13 @@ class PontosColetaDetalhe(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request, pk):
-        pontosColeta = get_object_or_404(PontosColeta, pk=pk, usuario = request.user)
+        pontosColeta = get_object_or_404(PontosColeta, pk=pk)
         serializer = PontosColetaSerializer(pontosColeta)
         return Response(serializer.data)
     
     def put(self, request, pk):
+        if not IsEmpresa().has_permission(request, self):
+            return Response({'erro': 'Apenas usuários do tipo Empresa podem editar pontos de coleta.'}, status=status.HTTP_403_FORBIDDEN)
         pontoColeta = get_object_or_404(PontosColeta, pk=pk, usuario=request.user)
         serializer = PontosColetaSerializer(pontoColeta, data=request.data, partial=True)
         if serializer.is_valid():
@@ -105,11 +114,19 @@ class PontosColetaDetalhe(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, pk):
+        if not IsEmpresa().has_permission(request, self):
+            return Response({'erro': 'Apenas usuários do tipo Empresa podem deletar pontos de coleta.'}, status=status.HTTP_403_FORBIDDEN)
         pontoColeta = get_object_or_404(PontosColeta, pk=pk, usuario=request.user)
         pontoColeta.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-    
+
+class TodasDoacoesGet(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request):
+        doacoes = CriarDoacao.objects.all()
+        serializer = CriarDoacaoSerializer(doacoes, many=True)
+        return Response(serializer.data)
 
 class CriarDoacaoCreate(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -118,7 +135,9 @@ class CriarDoacaoCreate(APIView):
         serializer = CriarDoacaoSerializer(criarDoacao, many=True)
         return Response(serializer.data)
     
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
+        if not IsDoador().has_permission(request, self):
+            return Response({'erro': 'Apenas usuários do tipo Doador podem criar doações.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = CriarDoacaoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(usuario=request.user)
@@ -129,11 +148,13 @@ class CriarDoacaoDetalhe(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request, pk):
-        criarDoacao = get_object_or_404(CriarDoacao, pk=pk, usuario = request.user)
+        criarDoacao = get_object_or_404(CriarDoacao, pk=pk)
         serializer = CriarDoacaoSerializer(criarDoacao)
         return Response(serializer.data)
     
     def put(self, request, pk):
+        if not IsDoador().has_permission(request, self):
+            return Response({'erro': 'Apenas usuários do tipo Doador podem editar doações.'}, status=status.HTTP_403_FORBIDDEN)
         criarDoacao = get_object_or_404(CriarDoacao, pk=pk, usuario=request.user)
         serializer = CriarDoacaoSerializer(criarDoacao, data=request.data, partial=True)
         if serializer.is_valid():
@@ -142,6 +163,8 @@ class CriarDoacaoDetalhe(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, pk):
+        if not IsDoador().has_permission(request, self):
+            return Response({'erro': 'Apenas usuários do tipo Doador podem deletar doações.'}, status=status.HTTP_403_FORBIDDEN)
         criarDoacao = get_object_or_404(CriarDoacao, pk=pk, usuario=request.user)
         criarDoacao.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

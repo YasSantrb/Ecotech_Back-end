@@ -23,7 +23,6 @@ def validar_cnpj(value):
     if len(value) == 14:
         return value
 class UserProfileSerializer(serializers.ModelSerializer):
-    
     cpf_cnpj = serializers.CharField(write_only=True, required=False)
     class Meta:
         model = UserProfile
@@ -37,9 +36,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
         if identificador:
             identificador_limpo = identificador.replace('.', '').replace('-', '').replace('/', '')
             if validar_cpf(identificador_limpo):
-                data['tipo_usuario'] = 'Doador'
+                data['cpf'] = identificador_limpo       
+                data['tipo_usuario'] = 'DOADOR'
             elif validar_cnpj(identificador_limpo):
-                data['tipo_usuario'] = 'Empresa'
+                data['cnpj'] = identificador_limpo      
+                data['tipo_usuario'] = 'EMPRESA'
             else:
                 raise serializers.ValidationError("O valor inserido não é um CPF ou CNPJ válido.")
         if 'tipo_usuario' not in data:
