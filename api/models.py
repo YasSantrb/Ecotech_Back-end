@@ -11,7 +11,7 @@ class UserProfile(models.Model):
     cpf = models.CharField(max_length=11, unique=True, null=True, blank=True)
     cnpj = models.CharField(max_length=14, unique=True, null=True, blank=True)
     telefone = models.CharField(max_length=15, null=True, blank=True)
-    tipo_usuario = models.CharField(max_length=7, choices=TIPO_USUARIO_CHOICES)
+    tipo_usuario = models.CharField(max_length=8, choices=TIPO_USUARIO_CHOICES)
     
     def __str__(self):
         return self.user.username
