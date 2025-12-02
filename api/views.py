@@ -103,7 +103,7 @@ class PontosColetaDetalhe(APIView):
         serializer = PontosColetaSerializer(pontosColeta)
         return Response(serializer.data)
     
-    def put(self, request, pk):
+    def patch(self, request, pk):
         if not IsEmpresa().has_permission(request, self):
             return Response({'erro': 'Apenas usuários do tipo Empresa podem editar pontos de coleta.'}, status=status.HTTP_403_FORBIDDEN)
         pontoColeta = get_object_or_404(PontosColeta, pk=pk, usuario=request.user)
@@ -152,7 +152,7 @@ class CriarDoacaoDetalhe(APIView):
         serializer = CriarDoacaoSerializer(criarDoacao)
         return Response(serializer.data)
     
-    def put(self, request, pk):
+    def patch(self, request, pk):
         if not IsDoador().has_permission(request, self):
             return Response({'erro': 'Apenas usuários do tipo Doador podem editar doações.'}, status=status.HTTP_403_FORBIDDEN)
         criarDoacao = get_object_or_404(CriarDoacao, pk=pk, usuario=request.user)
