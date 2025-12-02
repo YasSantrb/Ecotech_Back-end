@@ -9,10 +9,10 @@ urlpatterns = [
     path('registro/', RegistroUsuarioView.as_view(), name='registrar'),
     path('todos_pontos_coleta/', TodosPontosColetaGet.as_view(), name='todos_pontos_coleta'),
     path('meus_pontos_coleta/', PontosColetaCreate.as_view(), name='meus_pontos_coleta'),
-    path('pontos_coleta/<int:pk>/', PontosColetaDetalhe.as_view(), name='pontos_coleta-detalhe'),
+    path('meus_pontos_coleta/<int:pk>/', PontosColetaDetalhe.as_view(), name='meus_pontos_coleta-detalhe'),
     path('todas_doacoes/', TodasDoacoesGet.as_view(), name='todas_doacoes'),
     path('minhas_doacoes/', CriarDoacaoCreate.as_view(), name='minhas_doacoes'),
-    path('criar_doacao/<int:pk>/', CriarDoacaoDetalhe.as_view(), name='criar_doacao-detalhe'),
+    path('minhas_doacoes/<int:pk>/', CriarDoacaoDetalhe.as_view(), name='minhas_doacoes-detalhe'),
 ]
 
 # {
