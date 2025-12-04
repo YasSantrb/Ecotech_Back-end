@@ -14,15 +14,3 @@ urlpatterns = [
     path('minhas_doacoes/', CriarDoacaoCreate.as_view(), name='minhas_doacoes'),
     path('minhas_doacoes/<int:pk>/', CriarDoacaoDetalhe.as_view(), name='minhas_doacoes-detalhe'),
 ]
-
-# {
-# "username": "EcoLixo",
-# "email": "ecolixo@gmail.com",
-# "password": "ecolixo123",
-# "confirmar_senha": "ecolixo123",
-# "profile": {
-# "cep": "64809-911",
-# "cpf_cnpj": "12345678910111",
-# "telefone": "(89)3521-7373"
-# }
-# }

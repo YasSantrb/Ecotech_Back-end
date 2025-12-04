@@ -1,5 +1,3 @@
-# NOVO permissions.ESTÁVEL.py
-
 from rest_framework import permissions
 
 class IsDoador(permissions.BasePermission):
