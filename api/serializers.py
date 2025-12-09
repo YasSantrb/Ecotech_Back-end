@@ -13,7 +13,9 @@ class PontosColetaSerializer(serializers.ModelSerializer):
 class CriarDoacaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = CriarDoacao
-        fields = '__all__'
+        fields = ['id', 'usuario', 'nome_doacao', 'especificacao', 'endereco',
+            'descricao_geral', 'observacao', 'condicao', 'fotos_eletronico', 
+            'criado_em']
 
 def validar_cpf(value):
     if len(value) == 11:
