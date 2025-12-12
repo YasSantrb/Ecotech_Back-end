@@ -35,7 +35,7 @@ condicao_eletronico = [
     ('USADO', 'Usado'),
     ('PARA PEÇAS', 'Para peças'),
 ]    
-class CriarDoacao(models.Model):
+class Doacao(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='doacoes', null=True, blank=True)
     nome_doacao = models.CharField(max_length=100)
     especificacao = models.TextField()

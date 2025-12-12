@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import PontosColeta
 from .models import UserProfile
 from .models import User
-from .models import CriarDoacao
+from .models import Doacao
 from django.db import IntegrityError
 
 class PontosColetaSerializer(serializers.ModelSerializer):
@@ -10,9 +10,9 @@ class PontosColetaSerializer(serializers.ModelSerializer):
         model = PontosColeta
         fields = '__all__'
         
-class CriarDoacaoSerializer(serializers.ModelSerializer):
+class DoacaoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CriarDoacao
+        model = Doacao
         fields = ['id', 'usuario', 'nome_doacao', 'especificacao', 'endereco',
             'descricao_geral', 'observacao', 'condicao', 'fotos_eletronico', 
             'criado_em']

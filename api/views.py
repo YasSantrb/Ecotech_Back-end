@@ -3,12 +3,12 @@ from rest_framework.response import Response
 from .models import PontosColeta
 from django.shortcuts import get_object_or_404
 from .serializers import PontosColetaSerializer
-from .serializers import CriarDoacaoSerializer
+from .serializers import DoacaoSerializer
 from .serializers import UserSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework import permissions, status
 from .models import User, UserProfile
-from .models import CriarDoacao
+from .models import Doacao
 from django.contrib.auth import authenticate    
 from .permissions import IsDoador, IsEmpresa
 
@@ -124,21 +124,21 @@ class PontosColetaDetalhe(APIView):
 class TodasDoacoesGet(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
-        doacoes = CriarDoacao.objects.all()
-        serializer = CriarDoacaoSerializer(doacoes, many=True)
+        doacoes = Doacao.objects.all()
+        serializer = DoacaoSerializer(doacoes, many=True)
         return Response(serializer.data)
 
 class CriarDoacaoCreate(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
-        criarDoacao = CriarDoacao.objects.filter(usuario=request.user)
-        serializer = CriarDoacaoSerializer(criarDoacao, many=True)
+        criarDoacao = Doacao.objects.filter(usuario=request.user)
+        serializer = DoacaoSerializer(criarDoacao, many=True)
         return Response(serializer.data)
     
     def post(self, request, *args, **kwargs):
         if not IsDoador().has_permission(request, self):
             return Response({'erro': 'Apenas usuários do tipo Doador podem criar doações.'}, status=status.HTTP_403_FORBIDDEN)
-        serializer = CriarDoacaoSerializer(data=request.data)
+        serializer = DoacaoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(usuario=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -148,15 +148,15 @@ class CriarDoacaoDetalhe(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request, pk):
-        criarDoacao = get_object_or_404(CriarDoacao, pk=pk)
-        serializer = CriarDoacaoSerializer(criarDoacao)
+        criarDoacao = get_object_or_404(Doacao, pk=pk)
+        serializer = DoacaoSerializer(criarDoacao)
         return Response(serializer.data)
     
     def patch(self, request, pk):
         if not IsDoador().has_permission(request, self):
             return Response({'erro': 'Apenas usuários do tipo Doador podem editar doações.'}, status=status.HTTP_403_FORBIDDEN)
-        criarDoacao = get_object_or_404(CriarDoacao, pk=pk, usuario=request.user)
-        serializer = CriarDoacaoSerializer(criarDoacao, data=request.data, partial=True)
+        criarDoacao = get_object_or_404(Doacao, pk=pk, usuario=request.user)
+        serializer = DoacaoSerializer(criarDoacao, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -165,6 +165,6 @@ class CriarDoacaoDetalhe(APIView):
     def delete(self, request, pk):
         if not IsDoador().has_permission(request, self):
             return Response({'erro': 'Apenas usuários do tipo Doador podem deletar doações.'}, status=status.HTTP_403_FORBIDDEN)
-        criarDoacao = get_object_or_404(CriarDoacao, pk=pk, usuario=request.user)
+        criarDoacao = get_object_or_404(Doacao, pk=pk, usuario=request.user)
         criarDoacao.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
