@@ -11,10 +11,9 @@ class PontosColetaSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class DoacaoSerializer(serializers.ModelSerializer):
-    username = serializers.ReadOnlyField(source='usuario.username')
     class Meta:
         model = Doacao
-        fields = ['id', 'username', 'usuario', 'nome_doacao', 'especificacao', 'endereco',
+        fields = ['id', 'usuario', 'nome_doacao', 'especificacao', 'endereco',
             'descricao_geral', 'observacao', 'condicao', 'fotos_eletronico', 
             'criado_em']
 
@@ -29,8 +28,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
     cpf_cnpj = serializers.CharField(write_only=True, required=False)
     class Meta:
         model = UserProfile
-        fields = ['cpf', 'cnpj', 'telefone', 'cep', 'cpf_cnpj', 'tipo_usuario', 'criado_em']
-        read_only_fields = ['cpf', 'cnpj', 'tipo_usuario', 'criado_em']
+        fields = ['cpf', 'cnpj', 'telefone', 'cep', 'cpf_cnpj', 'tipo_usuario']
+        read_only_fields = ['cpf', 'cnpj', 'tipo_usuario']
         
     def validate(self, data):
         identificador = data.pop('cpf_cnpj', None)
