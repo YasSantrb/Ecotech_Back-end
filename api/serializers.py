@@ -11,9 +11,10 @@ class PontosColetaSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class DoacaoSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source='usuario.username')
     class Meta:
         model = Doacao
-        fields = ['id', 'usuario', 'nome_doacao', 'especificacao', 'endereco',
+        fields = ['id', 'username', 'usuario', 'nome_doacao', 'especificacao', 'endereco',
             'descricao_geral', 'observacao', 'condicao', 'fotos_eletronico', 
             'criado_em']
 
