@@ -29,7 +29,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     cpf_cnpj = serializers.CharField(write_only=True, required=False)
     class Meta:
         model = UserProfile
-        fields = ['cpf', 'cnpj', 'telefone', 'cep', 'cpf_cnpj', 'tipo_usuario']
+        fields = ['cpf', 'cnpj', 'telefone', 'cep', 'cpf_cnpj', 'tipo_usuario', 'criado_em']
         read_only_fields = ['cpf', 'cnpj', 'tipo_usuario']
         
     def validate(self, data):
