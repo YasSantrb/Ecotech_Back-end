@@ -30,7 +30,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ['cpf', 'cnpj', 'telefone', 'cep', 'cpf_cnpj', 'tipo_usuario', 'criado_em']
-        read_only_fields = ['cpf', 'cnpj', 'tipo_usuario']
+        read_only_fields = ['cpf', 'cnpj', 'tipo_usuario', 'criado_em']
         
     def validate(self, data):
         identificador = data.pop('cpf_cnpj', None)
@@ -57,7 +57,7 @@ class UserSerializer(serializers.ModelSerializer):
     confirmar_senha = serializers.CharField(write_only=True)
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'confirmar_senha', 'email', 'profile', 'criado_em']
+        fields = ['id', 'username', 'password', 'confirmar_senha', 'email', 'profile']
         extra_kwargs = {'password': {'write_only': True}, 
                         'email': {'required': True}}
         
