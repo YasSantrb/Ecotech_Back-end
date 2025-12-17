@@ -57,7 +57,7 @@ class UserSerializer(serializers.ModelSerializer):
     confirmar_senha = serializers.CharField(write_only=True)
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'confirmar_senha', 'email', 'profile']
+        fields = ['id', 'username', 'password', 'confirmar_senha', 'email', 'profile', 'criado_em']
         extra_kwargs = {'password': {'write_only': True}, 
                         'email': {'required': True}}
         
